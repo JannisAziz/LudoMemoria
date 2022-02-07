@@ -1,0 +1,3 @@
+spring.data.mongodb.uri: ${MONGOCLUSTER_URI:mongodb://localhost/ludoMemoria?retryWrites=true&w=majority}
+
+server.port: ${PORT:8080}
