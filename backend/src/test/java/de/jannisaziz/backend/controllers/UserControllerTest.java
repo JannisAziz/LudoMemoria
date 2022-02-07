@@ -33,7 +33,7 @@ class UserControllerTest {
     private ResponseEntity<User> requestGetUserById(String userId) {
         return webTestClient
                 .get()
-                .uri("http://localhost:" + port + "/users/" + userId)
+                .uri("http://localhost:" + port + "/api/users/" + userId)
                 .retrieve()
                 .onStatus(HttpStatus.BAD_REQUEST::equals, clientResponse -> Mono.empty())
                 .toEntity(User.class)
