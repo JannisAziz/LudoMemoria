@@ -24,7 +24,8 @@ class UserServiceTest {
 
         // GIVEN
         String testId = "TEST_ID";
-        User expected = new User(testId, List.of());
+        User expected = new User();
+        expected.setId(testId);
         when(userRepositoryMock.findById(testId)).thenReturn(Optional.of(expected));
 
         // WHEN
