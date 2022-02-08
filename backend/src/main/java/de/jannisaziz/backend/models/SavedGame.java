@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,9 +15,9 @@ public class SavedGame {
     @Id
     String id;
 
-    String name;
+    Game game;
 
-    public SavedGame(String name) {
-        this.name = name;
-    }
+    int timePlayed;
+    List<String> achievements;
+    List<String> notes;
 }

@@ -31,7 +31,12 @@ public class RAWGDeserializer extends JsonDeserializer<RAWGResponseObject> {
                         gameNode -> results.add(
                                 new Game(
                                         gameNode.get("id").asText(),
-                                        gameNode.get("name").asText()
+                                        gameNode.get("name").asText(),
+                                        "",
+                                        gameNode.get("background_image").asText(),
+                                        0,
+                                        0,
+                                        List.of()
                                 )
                         )
                 );

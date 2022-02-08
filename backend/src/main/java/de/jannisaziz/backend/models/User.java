@@ -17,5 +17,20 @@ public class User {
     @Id
     String id;
 
+    String email;
+    String displayName;
+    String password;
+
+    List<String> oauthConnections;
+
     List<SavedGame> savedGames;
+    List<Game> wishlistGames;
+    List<Review> reviews;
+
+    String description;
+    String birthdate;
+    String avatarImg;
+    String backgroundImg;
+
+    List<String> socialLinks;
 }
