@@ -1,3 +1,12 @@
+import {Game} from "./Game";
+
 export type SavedGame = {
-    name: string
+
+    id: string
+
+    game: Game
+
+    timePlayed?: number
+    achievements?: string[]
+    notes?: string[]
 }
