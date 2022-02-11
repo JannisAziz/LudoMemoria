@@ -1,15 +1,12 @@
-import {SavedGame} from "./SavedGame";
-import {Game} from "./Game";
-import {Review} from "./Review";
+import {SavedGame} from "../games/SavedGame";
+import {Game} from "../games/Game";
+import {Review} from "../games/Review";
 
 export type User = {
 
-    // Credentials
-
     id: string
     email: string
-    displayName: string
-    password: string
+    username: string
 
     oauthConnections?: string[]
 

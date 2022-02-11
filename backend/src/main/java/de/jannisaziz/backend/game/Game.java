@@ -1,4 +1,4 @@
-package de.jannisaziz.backend.models;
+package de.jannisaziz.backend.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,23 +6,24 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "games")
-public class Game {
+public class Game implements Serializable {
 
     @Id
-    String id;
+    private String id;
 
-    String name;
-    String logoImg;
-    String backgroundImg;
+    private String name;
+    private String logoImg;
+    private String backgroundImg;
 
-    int votesUp;
-    int votesDown;
+    private int votesUp;
+    private int votesDown;
 
-    List<Review> reviews;
+    private List<Review> reviews;
 }
