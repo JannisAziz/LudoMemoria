@@ -1,12 +1,11 @@
-package de.jannisaziz.backend.repositories;
+package de.jannisaziz.backend.game;
 
-import de.jannisaziz.backend.models.Game;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import utils.RAWGResponseObject;
+import de.jannisaziz.backend.game.utils.RAWGResponseObject;
 
 import java.util.List;
 
@@ -32,7 +31,6 @@ public class RAWGGameRepository {
         }
 
         return List.of();
-
     }
 
     private ResponseEntity<RAWGResponseObject> search(String searchUri) {

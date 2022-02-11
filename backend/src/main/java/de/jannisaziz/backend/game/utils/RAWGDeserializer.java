@@ -1,11 +1,11 @@
-package utils;
+package de.jannisaziz.backend.game.utils;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import de.jannisaziz.backend.models.Game;
+import de.jannisaziz.backend.game.Game;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ public class RAWGDeserializer extends JsonDeserializer<RAWGResponseObject> {
         String next = rootNode.get("next").asText();
         String previous = rootNode.get("previous").asText();
 
-        List<Game> results = new ArrayList<>();
+        List<Game> games = new ArrayList<>();
         rootNode.get("results")
                 .elements().forEachRemaining(
-                        gameNode -> results.add(
+                        gameNode -> games.add(
                                 new Game(
                                         gameNode.get("id").asText(),
                                         gameNode.get("name").asText(),
@@ -45,7 +45,7 @@ public class RAWGDeserializer extends JsonDeserializer<RAWGResponseObject> {
                 count,
                 next,
                 previous,
-                results
+                games
         );
     }
 }

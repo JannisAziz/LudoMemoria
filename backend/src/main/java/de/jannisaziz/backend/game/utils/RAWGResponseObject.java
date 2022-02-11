@@ -1,7 +1,7 @@
-package utils;
+package de.jannisaziz.backend.game.utils;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import de.jannisaziz.backend.models.Game;
+import de.jannisaziz.backend.game.Game;
 
 import java.util.List;
 
