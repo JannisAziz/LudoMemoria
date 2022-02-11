@@ -1,4 +1,4 @@
-import {Review} from "../models/Review";
+import {Review} from "./Review";
 import ReviewCard from "./ReviewCard";
 
 export default function ReviewList({reviews}: {reviews: Review[]}) {

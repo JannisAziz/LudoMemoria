@@ -1,5 +1,9 @@
-import {SavedGame} from "../../models/SavedGame";
+import {SavedGame} from "./SavedGame";
 import {MouseEventHandler} from "react";
+
+import "../styles/Styles.css"
+import {Button} from "@mui/material";
+import {Delete} from "@mui/icons-material";
 
 export default function SavedGameCard({savedGame}: {savedGame: SavedGame}) {
 
@@ -10,8 +14,12 @@ export default function SavedGameCard({savedGame}: {savedGame: SavedGame}) {
     }
 
     return (
-        <button onClick={onCardPressed}>
+        <div>
             {savedGame.id} - {savedGame.game.name} - TimePlayed: {savedGame.timePlayed || 0}
-        </button>
+            <Button><Delete /></Button>
+            <Button onClick={onCardPressed}>
+                <img className={"GameBackgroundImg"} src={savedGame.game.backgroundImg} alt={"bgImg"}/>
+            </Button>
+        </div>
     )
 }

@@ -1,4 +1,4 @@
-import {Game} from "../../models/Game";
+import {Game} from "./Game";
 import GameCard from "./GameCard";
 
 export default function GamesList({games}: {games: Game[]}) {
