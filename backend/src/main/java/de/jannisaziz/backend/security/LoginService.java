@@ -1,5 +1,6 @@
 package de.jannisaziz.backend.security;
 
+import de.jannisaziz.backend.security.email.EmailService;
 import de.jannisaziz.backend.user.UserService;
 import de.jannisaziz.backend.user.User;
 import de.jannisaziz.backend.user.UserRole;
@@ -8,27 +9,24 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
 import java.util.UUID;
 
 @AllArgsConstructor
 @Service
 public class LoginService {
 
+    private final EmailService emailService;
     private final UserService userService;
     private final Argon2PasswordEncoder argon2PasswordEncoder;
 
-    public User signIn(LoginRequest request) throws IllegalStateException, InvalidParameterException {
+    public User signIn(LoginRequest request) throws IllegalStateException, IllegalArgumentException {
         try {
             User user = userService.findUser(request.getUsername(), request.getEmail());
             String encodedRequestPassword = argon2PasswordEncoder.encode(request.getPassword());
 
-            if (user.getPassword().equals(encodedRequestPassword))
-                return user;
-            else {
-                throw new InvalidParameterException("Wrong Password");
-            }
-        } catch (UsernameNotFoundException | InvalidParameterException e) {
+            if (user.getPassword().equals(encodedRequestPassword)) return user;
+            else throw new IllegalArgumentException("Wrong Password");
+        } catch (UsernameNotFoundException | IllegalArgumentException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
@@ -37,15 +35,35 @@ public class LoginService {
         try {
             String confirmationToken = UUID.randomUUID().toString();
 
-            return userService.createUser(new User(
+            userService.createUser(new User(
                     request.getUsername(),
                     request.getEmail(),
                     argon2PasswordEncoder.encode(request.getPassword()),
                     UserRole.USER,
                     confirmationToken)
             );
+
+            return emailService.sendEmail(request.getEmail(), request.getUsername(), confirmationToken);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
+        }
+    }
+
+    public String resendConfirmationEmail(String toEmail) throws IllegalArgumentException {
+        try {
+            User user = userService.findUser(null, toEmail);
+            return emailService.sendEmail(user.getEmail(), user.getUsername(), user.getConfirmationToken());
+        } catch (UsernameNotFoundException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+    }
+
+    public String confirmToken(String confirmationToken) throws IllegalArgumentException {
+        try {
+            User user = userService.findUserByConfirmationToken(confirmationToken);
+            return userService.confirmUser(user.getEmail());
+        } catch (UsernameNotFoundException e) {
+            throw new IllegalArgumentException(e.getMessage());
         }
     }
 }
