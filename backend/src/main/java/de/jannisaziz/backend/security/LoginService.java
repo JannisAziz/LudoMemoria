@@ -5,15 +5,36 @@ import de.jannisaziz.backend.user.UserService;
 import de.jannisaziz.backend.user.User;
 import de.jannisaziz.backend.user.UserRole;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
 @AllArgsConstructor
 @Service
 public class LoginService {
+
+    private final AuthenticationManager authManager;
+    private final JWTUtilService jwtUtilService;
+
+    public String login(LoginRequest request) {
+        try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+            //todo: implement email authorization aswell!
+
+            return jwtUtilService.createToken(userService.findUser(request.getUsername(), request.getEmail()));
+        } catch (AuthenticationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid credentials");
+        }
+    }
 
     private final EmailService emailService;
     private final UserService userService;
@@ -22,7 +43,6 @@ public class LoginService {
     public User signIn(LoginRequest request) throws IllegalStateException, IllegalArgumentException {
         try {
             User user = userService.findUser(request.getUsername(), request.getEmail());
-            String encodedRequestPassword = argon2PasswordEncoder.encode(request.getPassword());
 
             if (argon2PasswordEncoder.matches(request.getPassword(), user.getPassword())) return user;
             else throw new IllegalArgumentException("Wrong Password");
