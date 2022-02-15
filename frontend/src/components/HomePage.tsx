@@ -13,6 +13,7 @@ export default function HomePage() {
             alert("already logged in")
             nav("/profile")
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
