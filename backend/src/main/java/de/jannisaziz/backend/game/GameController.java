@@ -25,4 +25,13 @@ public class GameController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @GetMapping("/{id}")
+    public Game findGameById(@PathVariable String id) throws ResponseStatusException {
+        try {
+            return service.findGameById(id);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }

@@ -19,8 +19,9 @@ public class Game implements Serializable {
     private String id;
 
     private String name;
-    private String logoImg;
-    private String backgroundImg;
+    private String description;
+
+    private String imageUrl;
 
     private int votesUp;
     private int votesDown;
