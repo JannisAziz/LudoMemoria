@@ -16,6 +16,7 @@ export default function GamePage() {
                 .catch(console.error)
         }
         else return alert("No gameId")
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     return (
