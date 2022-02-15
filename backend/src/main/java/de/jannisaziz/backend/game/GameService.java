@@ -1,12 +1,12 @@
 package de.jannisaziz.backend.game;
 
 import de.jannisaziz.backend.game.IGDB.IGDBGameRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class GameService {
 
@@ -26,7 +26,6 @@ public class GameService {
         else
             return searchResults;
     }
-
     public Game findGameById(String id) throws IllegalArgumentException {
 
         if (!repository.existsById(id)) {
