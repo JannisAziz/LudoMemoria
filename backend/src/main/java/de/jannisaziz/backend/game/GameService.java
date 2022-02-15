@@ -1,11 +1,12 @@
 package de.jannisaziz.backend.game;
 
-import lombok.AllArgsConstructor;
+import de.jannisaziz.backend.game.IGDB.IGDBGameRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class GameService {
 
@@ -14,22 +15,26 @@ public class GameService {
     }
 
     private final GameRepository repository;
-    private final RAWGGameRepository rawgRepository;
-
-    private boolean isOnline = true;
+    private final IGDBGameRepository igdbRepository;
 
     public List<Game> findGamesByName(String name) throws IllegalArgumentException {
 
-        List<Game> searchResults;
-
-        if (isOnline)
-            searchResults = rawgRepository.findGamesByName(name);
-        else
-            searchResults = repository.findGamesByNameRegex(name.toLowerCase());
+        List<Game> searchResults = igdbRepository.searchGamesByName(name);
 
         if (searchResults.isEmpty())
             throw NO_GAMES_FOUND_EX(name);
         else
             return searchResults;
+    }
+
+    public Game findGameById(String id) throws IllegalArgumentException {
+
+        if (!repository.existsById(id)) {
+            Game game = igdbRepository.findGameById(id);
+
+            return repository.save(game);
+        }
+        return repository.findById(id)
+                .orElseThrow(() -> NO_GAMES_FOUND_EX(id));
     }
 }
