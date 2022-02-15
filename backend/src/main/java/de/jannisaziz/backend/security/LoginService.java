@@ -24,7 +24,7 @@ public class LoginService {
             User user = userService.findUser(request.getUsername(), request.getEmail());
             String encodedRequestPassword = argon2PasswordEncoder.encode(request.getPassword());
 
-            if (user.getPassword().equals(encodedRequestPassword)) return user;
+            if (argon2PasswordEncoder.matches(request.getPassword(), user.getPassword())) return user;
             else throw new IllegalArgumentException("Wrong Password");
         } catch (UsernameNotFoundException | IllegalArgumentException e) {
             throw new IllegalStateException(e.getMessage());

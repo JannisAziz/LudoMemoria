@@ -12,7 +12,7 @@ public class EmailService {
 
     public String sendEmail(String recipientEmail, String recipientName, String token) throws IllegalStateException {
 
-        String activationLink = "http://localhost:8080/api/auth/confirm=" + token;
+        String activationLink = "http://192.168.2.104:8080/api/auth/confirm=" + token;
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
