@@ -1,24 +1,24 @@
 import React from 'react';
-import './App.css';
-import Navigation from "./components/utils/Navigation";
-import HomePage from "./pages/HomePage";
-import ProfilePage from "./pages/ProfilePage";
-import CatalogPage from "./pages/CatalogPage";
-import AboutPage from "./pages/AboutPage";
+import Navigation from "./components/Navigation";
+import HomePage from "./components/HomePage";
+import ProfilePage from "./users/ProfilePage";
+import CatalogPage from "./components/CatalogPage";
+import AboutPage from "./components/AboutPage";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Header from "./components/utils/Header";
+import GamePage from "./games/GamePage";
+import "./styles/Styles.scss";
 
 export default function App() {
     return (
         <div className={"App"}>
             <BrowserRouter>
-                <Header/>
                 <Navigation/>
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/profile" element={<ProfilePage />}/>
                     <Route path="/catalog" element={<CatalogPage />}/>
                     <Route path="/about" element={<AboutPage />}/>
+                    <Route path="/games/:gameId" element={<GamePage />}/>
                 </Routes>
             </BrowserRouter>
         </div>
