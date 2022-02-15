@@ -12,7 +12,6 @@ export default function FilterForm() {
         console.log("onFilter")
     }
 
-
     return (
         <form>
             <input placeholder={""} />

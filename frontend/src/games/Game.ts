@@ -3,15 +3,12 @@ import {Review} from "./Review";
 export type Game = {
     id: string
     name: string
+    description: string
 
-    logoImg?: string
-    backgroundImg?: string
+    imageUrl: string
 
     votesUp?: number
     votesDown?: number
 
     reviews?: Review[]
-
-    // Extra game details
-
 }

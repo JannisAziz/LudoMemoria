@@ -1,16 +1,14 @@
 import React, {useState} from "react";
 import GamesList from "../games/GamesList";
-import SearchField from "./SearchField";
 import {Game} from "../games/Game";
 import {findGamesByName} from "../games/GameService";
+import SearchForm from "./SearchForm";
 
 export default function CatalogPage() {
 
     const [games, setGames] = useState<Game[]>([])
 
     const onSearch = (input: string) => {
-        console.log(`Search: ${input}`)
-
         findGamesByName(input)
             .then(res => setGames(res))
             .catch(console.error)
@@ -18,8 +16,7 @@ export default function CatalogPage() {
 
     return (
         <div>
-            Catalog
-            <SearchField onSearch={onSearch}/>
+            <SearchForm onSearch={onSearch}/>
             {games?.length > 0 ? (<GamesList games={games}/>) : "No games here..."}
         </div>
     );

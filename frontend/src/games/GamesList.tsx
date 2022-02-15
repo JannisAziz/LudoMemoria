@@ -1,10 +1,15 @@
 import {Game} from "./Game";
 import GameCard from "./GameCard";
+import "../styles/Styles.scss";
+import React from "react";
 
-export default function GamesList({games}: {games: Game[]}) {
+export default function GamesList({games}: {games: Game[] | undefined}) {
     return (
-        <ul>
-            {games.map(game => (<li key={game.id}><GameCard game={game}/></li>))}
-        </ul>
+        <article className={"GamesList"}>
+            {games && games.length > 0 ?
+                games.map(game => (<GameCard game={game}/>)) :
+                ("No games yet")
+            }
+        </article>
     )
 }

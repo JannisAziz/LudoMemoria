@@ -6,3 +6,10 @@ export function findGamesByName(name: string){
         .then(response => response.data)
         .catch(console.error)
 }
+
+export function findGameById(id: string){
+    return axios
+        .get(`/api/games/${id}`)
+        .then(response => response.data)
+        .catch(console.error)
+}
