@@ -2,6 +2,7 @@ package de.jannisaziz.backend.user;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,6 +13,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
     private final UserService service;
+
+    private boolean isAuthorized(UserRole requiredRole) {
+        return SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(grantedAuthority -> requiredRole.equals(UserRole.valueOf(grantedAuthority.getAuthority())));
+    }
 
     @GetMapping("/id/{userId}")
     public User getUserById(@PathVariable String userId) throws ResponseStatusException {
@@ -33,10 +43,13 @@ public class UserController {
 
     @PatchMapping("/update")
     public String updateUser(@RequestBody UserDTO userDTO) throws ResponseStatusException {
-        try {
-            return service.updateUser(userDTO);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        if (isAuthorized(UserRole.USER)) {
+            try {
+                return service.updateUser(userDTO);
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            }
         }
+        throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 }
