@@ -15,6 +15,7 @@ public class Review implements Serializable {
     @Id
     private String id;
     private String userId;
+    private String username;
     private String gameId;
 
     private String description;
