@@ -1,4 +1,4 @@
-package de.jannisaziz.backend.review;
+package de.jannisaziz.backend.savedGame;
 
 import de.jannisaziz.backend.user.UserRole;
 import lombok.AllArgsConstructor;
@@ -11,10 +11,10 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/reviews")
-public class ReviewController {
+@RequestMapping("/api/savedGames")
+public class SavedGameController {
 
-    private final ReviewService service;
+    private final SavedGameService service;
 
     private boolean isAuthorized(UserRole requiredRole) {
         return SecurityContextHolder
@@ -26,27 +26,18 @@ public class ReviewController {
     }
 
     @GetMapping("/userId={userId}")
-    public List<Review> findReviewsByUserId(@PathVariable String userId) throws ResponseStatusException {
+    public List<SavedGame> findSavedGamesByUserId(@PathVariable String userId) throws ResponseStatusException {
         try {
-            return service.findReviewsByUserId(userId);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-    }
-
-    @GetMapping("/gameId={gameId}")
-    public List<Review> findReviewsByGameId(@PathVariable String gameId) throws ResponseStatusException {
-        try {
-            return service.findReviewsByGameId(gameId);
+            return service.findSavedGamesByUserId(userId);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PutMapping
-    public Review addReview(@RequestBody Review review) throws ResponseStatusException {
+    public SavedGame addSavedGame(@RequestBody SavedGame savedGame) throws ResponseStatusException {
         if (isAuthorized(UserRole.USER)) try {
-            return service.addReview(review);
+            return service.addSavedGame(savedGame);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -54,19 +45,19 @@ public class ReviewController {
     }
 
     @PatchMapping
-    public Review updateReview(@RequestBody Review review) throws ResponseStatusException {
+    public SavedGame updateSavedGame(@RequestBody SavedGame savedGame) throws ResponseStatusException {
         if (isAuthorized(UserRole.USER)) try {
-            return service.updateReview(review);
+            return service.updateSavedGame(savedGame);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping("/{reviewId}")
-    public Review deleteReviewById(@PathVariable String reviewId) throws ResponseStatusException {
+    @DeleteMapping
+    public void deleteSavedGame(@RequestBody SavedGame savedGame) throws ResponseStatusException {
         if (isAuthorized(UserRole.USER)) try {
-            return service.deleteReviewById(reviewId);
+            service.deleteSavedGame(savedGame);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

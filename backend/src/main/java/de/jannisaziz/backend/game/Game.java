@@ -21,10 +21,6 @@ public class Game implements Serializable {
     private String name;
     private String description;
 
-    private String imageUrl;
-
-    private int votesUp;
-    private int votesDown;
-
-    private List<Review> reviews;
+    private String coverId;
+    private List<String> screenshotIds;
 }

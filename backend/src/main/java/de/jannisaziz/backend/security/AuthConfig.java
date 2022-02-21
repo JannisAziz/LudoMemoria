@@ -29,10 +29,16 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/api/users/**").authenticated()
-                .antMatchers("/api/reviews/**").authenticated()
-                .antMatchers("/api/games/**").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/users/**").permitAll()
+                .antMatchers("/api/search/**").permitAll()
+                .antMatchers("/api/games/**").permitAll()
+                .antMatchers("/api/reviews/**").permitAll()
+                .antMatchers("/api/savedGames/**").permitAll()
+                .antMatchers("/api/users/").authenticated()
+                .antMatchers("/api/games/").authenticated()
+                .antMatchers("/api/reviews/").authenticated()
+                .antMatchers("/api/savedGames/").authenticated()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
     }

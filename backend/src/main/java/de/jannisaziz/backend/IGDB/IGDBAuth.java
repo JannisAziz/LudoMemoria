@@ -1,4 +1,4 @@
-package de.jannisaziz.backend.game.IGDB;
+package de.jannisaziz.backend.IGDB;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -15,8 +15,7 @@ public class IGDBAuth {
             "&client_secret=" + CLIENT_SECRET +
             "&grant_type=client_credentials";
 
-    private static record IGDB_AUTH_TOKEN(String access_token, int expires_in, String token_type) {
-    }
+    private static record IGDB_AUTH_TOKEN(String access_token, int expires_in, String token_type) { }
 
     private static IGDB_AUTH_TOKEN ACCESS_TOKEN;
 
@@ -36,6 +35,8 @@ public class IGDBAuth {
                 .onStatus(HttpStatus.FORBIDDEN::equals, clientResponse -> Mono.empty())
                 .toEntity(IGDB_AUTH_TOKEN.class)
                 .block();
+
+        System.out.println("accesstoken expires in: " + response.getBody().expires_in);
 
         return response.getBody();
     }

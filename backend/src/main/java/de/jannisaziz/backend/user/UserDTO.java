@@ -1,6 +1,6 @@
 package de.jannisaziz.backend.user;
 
-import de.jannisaziz.backend.game.SavedGame;
+import de.jannisaziz.backend.savedGame.SavedGame;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import java.util.List;

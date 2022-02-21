@@ -1,6 +1,6 @@
 package de.jannisaziz.backend.user;
 
-import de.jannisaziz.backend.game.SavedGame;
+import de.jannisaziz.backend.savedGame.SavedGame;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -37,8 +37,6 @@ public class User implements UserDetails {
 
     private String confirmationToken;
 
-    private List<SavedGame> savedGames = new ArrayList<>();
-
     private boolean isAccountNonExpired = true;
     private boolean isAccountNonLocked = true;
     private boolean isCredentialsNonExpired = true;
@@ -55,7 +53,6 @@ public class User implements UserDetails {
                 .id(this.id)
                 .username(this.username)
                 .email(this.email)
-                .savedGames(this.savedGames)
                 .build();
     }
 
@@ -64,6 +61,5 @@ public class User implements UserDetails {
         this.id = userDTO.getId(); // Should never actually change
         this.username = userDTO.getUsername();
         this.email = userDTO.getEmail();
-        this.savedGames = userDTO.getSavedGames();
     }
 }

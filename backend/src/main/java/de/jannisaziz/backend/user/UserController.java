@@ -28,7 +28,7 @@ public class UserController {
     }
 
     @GetMapping("/currentUser")
-    public UserDTO getCurrentUser(HttpServletRequest request) throws ResponseStatusException {
+    public UserDTO retrieveCurrentUser(HttpServletRequest request) throws ResponseStatusException {
         try {
             String token = request.getHeader("Authorization").replace("Bearer", "").trim();
             String username = jwtUtilService.extractUsername(token);
@@ -37,32 +37,30 @@ public class UserController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
-    @GetMapping("/id/{userId}")
-    public User getUserById(@PathVariable String userId) throws ResponseStatusException {
+    @GetMapping("/id={userId}")
+    public UserDTO getUserById(@PathVariable String userId) throws ResponseStatusException {
         try {
-            return service.getUserById(userId);
+            return service.getUserById(userId).asDTO();
         } catch (UsernameNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @GetMapping("/name/{username}")
-    public User getUserByUsername(@PathVariable String username) throws ResponseStatusException {
+    @GetMapping("/name={username}")
+    public UserDTO getUserByUsername(@PathVariable String username) throws ResponseStatusException {
         try {
-            return service.findUser(username, null);
+            return service.findUser(username, null).asDTO();
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PatchMapping("/update")
+    @PatchMapping
     public UserDTO updateUser(@RequestBody UserDTO userDTO) throws ResponseStatusException {
-        if (isAuthorized(UserRole.USER)) {
-            try {
-                return service.updateUser(userDTO);
-            } catch (IllegalArgumentException e) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            }
+        if (isAuthorized(UserRole.USER)) try {
+            return service.updateUser(userDTO);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
