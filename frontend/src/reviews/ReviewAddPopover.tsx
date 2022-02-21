@@ -30,7 +30,7 @@ export default function ReviewAddPopover({user, game, onAddReview}: {user: User,
                 description: input
             }
 
-            addReview(newReview)//.catch(console.error)
+            addReview(newReview).catch(console.error)
             onAddReview(newReview)
         }
     }

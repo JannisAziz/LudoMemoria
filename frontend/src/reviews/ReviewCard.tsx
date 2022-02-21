@@ -33,12 +33,12 @@ export default function ReviewCard({review, onUpdateReview, onDeleteReview}: {re
     }
 
     function handleUpdate() {
-        setThisReview(updateReview(thisReview))//.catch(console.error)
+        updateReview(thisReview).then(setThisReview).catch(console.error)
         onUpdateReview(thisReview)
     }
 
     const onDelete = () => {
-        deleteReview(review)//.catch(console.error)
+        deleteReview(review).catch(console.error)
         onDeleteReview(review)
         setEditMode(false)
     }
