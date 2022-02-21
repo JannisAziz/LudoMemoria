@@ -26,11 +26,11 @@ export default function ReviewAddPopover({user, game, onAddReview}: {user: User,
                 userId: user.id,
                 username: user.username,
                 gameId: game.id,
-                gamename: game.name,
+                gameName: game.name,
                 description: input
             }
 
-            addReview(newReview).catch(console.error)
+            addReview(newReview).catch(err => alert("Error adding review: " + err.message))
             onAddReview(newReview)
         }
     }

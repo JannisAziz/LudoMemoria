@@ -3,7 +3,7 @@ export type Review = {
     userId: string
     username: string
     gameId: string
-    gamename: string
+    gameName: string
 
     description?: string
     dateAdded?: string
