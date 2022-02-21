@@ -42,22 +42,20 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> USR_NF_EX(token));
     }
 
-    public String createUser(User user) throws IllegalStateException {
+    public User createUser(User user) throws IllegalStateException {
         if (userRepository.existsByUsername(user.getUsername()))
-            throw new IllegalStateException("User with email already exists.");
+            throw new IllegalStateException("User already exists.");
         else {
-            userRepository.save(user);
-            return "User created";
+            return userRepository.save(user);
         }
     }
 
-    public String updateUser(UserDTO userDTO) throws IllegalStateException {
+    public UserDTO updateUser(UserDTO userDTO) throws IllegalStateException {
         try {
             User user = userRepository.findByUsernameOrEmail(userDTO.getUsername(), null)
                     .orElseThrow(() -> USR_NF_EX(userDTO.getUsername()));
             user.updateFromDTO(userDTO);
-            userRepository.save(user);
-            return "User updated";
+            return userRepository.save(user).asDTO();
         } catch (UsernameNotFoundException e) {
             throw new IllegalStateException(e.getMessage());
         }
