@@ -1,33 +1,36 @@
 import axios, {AxiosResponse} from "axios";
-import {User} from "../users/User";
-import {clearLoggedInUser, setLoggedInUser} from "../users/UserService";
+import {clearLoggedInUser} from "../users/UserService";
 
-export function signIn(username?: string, email?: string, password?: string) {
+const TOKEN_KEY = "LOGGED_IN_TOKEN"
+
+export const setLoggedInToken = (token: string) : void => localStorage.setItem(TOKEN_KEY, token)
+export const getLoggedInToken = () : string => localStorage.getItem(TOKEN_KEY) || ""
+export const clearLoggedInToken = () : void => localStorage.removeItem(TOKEN_KEY)
+
+export const getAxiosConfig = () : {headers: {'Authorization': string}} =>
+    ({headers: {'Authorization': 'Bearer ' + getLoggedInToken()}})
+
+export function signIn(username: string, email: string, password: string) {
     return axios.post(
         "/api/auth/signIn/",
         {username, email, password})
-        .then((res: AxiosResponse<User>) => setLoggedInUser(res.data))
-        .then(() => "Signed in")
-        .catch(console.error)
+        .then(res => setLoggedInToken(res.data))
 }
 
-export function signUp(username?: string, email?: string, password?: string) {
+export function signUp(username: string, email: string, password: string) {
     return axios.post(
         "/api/auth/signUp/",
         {username, email, password})
-        .then((res:AxiosResponse) => res.data)
-        .then(() => "Signed up")
-        .catch(console.error)
+        .then(res => setLoggedInToken(res.data))
 }
 
-export function resendConfirmationEmail(email?: string) {
+export function resendConfirmationEmail(email: string) {
     axios.post(
         `/api/auth/resendConfirmation=${email}/`)
         .then((res:AxiosResponse) => res.data)
-        .catch(console.error)
 }
 
 export function signOut() {
-    console.log("SignOut")
     clearLoggedInUser()
+    clearLoggedInToken()
 }

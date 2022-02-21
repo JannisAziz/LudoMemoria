@@ -2,8 +2,12 @@ import React, {FormEventHandler, MouseEventHandler, useState} from "react";
 import {Button, TextField} from "@mui/material";
 import isValidEmail from "./EmailValidator";
 import {resendConfirmationEmail, signUp} from "./LoginService";
+import {retrieveCurrentUser} from "../users/UserService";
+import {useNavigate} from "react-router-dom";
 
-export default function SignUpForm() {
+export default function SignUpForm({onSubmit} : {onSubmit: Function}) {
+
+    const nav = useNavigate()
 
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
@@ -13,13 +17,18 @@ export default function SignUpForm() {
     const onSignUpSubmit: FormEventHandler<HTMLFormElement>  = (e) => {
         e.preventDefault()
 
-        if (username && email && password && passwordRepeat) {
-            if (isValidEmail(email)) {
-                if (password === passwordRepeat)
-                    signUp(username, email.toLowerCase(), password).then(alert)
-                else alert("Passwords dont match!")
-            } else alert("Email invalid")
-        } else alert("Empty fields not allowed")
+        if (!(username && email && password && passwordRepeat))
+            return alert("Empty fields not allowed")
+        if (!isValidEmail(email))
+            return alert("Email invalid")
+        if (password !== passwordRepeat)
+            return alert("Passwords dont match!")
+
+        signUp(username, email.toLowerCase(), password)
+            .then(() => retrieveCurrentUser())
+            .then(() => nav("/profile"))
+            .catch(err => alert("Error retrieving user: " + err.message))
+        onSubmit()
     }
 
     const onResendConfirmationEmail: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -27,16 +36,17 @@ export default function SignUpForm() {
 
         const email = prompt("Enter your email")
 
-        if (email) {
-            if (isValidEmail(email)) {
-                resendConfirmationEmail(email.toLowerCase())
-                alert("Email sent")
-            } else alert("Email invalid")
+        if (!email) return alert("Email invalid")
+
+        if (isValidEmail(email)) {
+            resendConfirmationEmail(email.toLowerCase())
+            alert("Email sent")
+            onSubmit()
         }
     }
 
     return (
-        <form className={"LoginForm"} onSubmit={onSignUpSubmit}>
+        <form className={"SignUpForm"} onSubmit={onSignUpSubmit}>
             <TextField onChange={e => setUsername(e.currentTarget.value)} label={"Username"} variant={"outlined"}/>
             <TextField onChange={e => setEmail(e.currentTarget.value)} label={"Email"} variant={"outlined"}/>
             <TextField onChange={e => setPassword(e.currentTarget.value)} type={"password"} label={"Password"} variant={"outlined"}/>

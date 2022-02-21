@@ -1,5 +1,6 @@
 package de.jannisaziz.backend.user;
 
+import de.jannisaziz.backend.security.JWTUtilService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,12 +8,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.http.HttpServletRequest;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService service;
+    private final JWTUtilService jwtUtilService;
 
     private boolean isAuthorized(UserRole requiredRole) {
         return SecurityContextHolder
@@ -23,6 +27,16 @@ public class UserController {
                 .anyMatch(grantedAuthority -> requiredRole.equals(UserRole.valueOf(grantedAuthority.getAuthority())));
     }
 
+    @GetMapping("/currentUser")
+    public UserDTO getCurrentUser(HttpServletRequest request) throws ResponseStatusException {
+        try {
+            String token = request.getHeader("Authorization").replace("Bearer", "").trim();
+            String username = jwtUtilService.extractUsername(token);
+            return service.findUser(username, null).asDTO();
+        } catch (UsernameNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
     @GetMapping("/id/{userId}")
     public User getUserById(@PathVariable String userId) throws ResponseStatusException {
         try {
@@ -42,7 +56,7 @@ public class UserController {
     }
 
     @PatchMapping("/update")
-    public String updateUser(@RequestBody UserDTO userDTO) throws ResponseStatusException {
+    public UserDTO updateUser(@RequestBody UserDTO userDTO) throws ResponseStatusException {
         if (isAuthorized(UserRole.USER)) {
             try {
                 return service.updateUser(userDTO);

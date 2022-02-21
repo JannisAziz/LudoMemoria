@@ -1,7 +1,5 @@
 package de.jannisaziz.backend.user;
 
-import de.jannisaziz.backend.game.Game;
-import de.jannisaziz.backend.game.Review;
 import de.jannisaziz.backend.game.SavedGame;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -39,28 +37,17 @@ public class User implements UserDetails {
 
     private String confirmationToken;
 
-    private boolean isAccountNonExpired;
+    private List<SavedGame> savedGames = new ArrayList<>();
+
+    private boolean isAccountNonExpired = true;
     private boolean isAccountNonLocked = true;
-    private boolean isCredentialsNonExpired;
-    private boolean isEnabled = false;
+    private boolean isCredentialsNonExpired = true;
+    private boolean isEnabled = true;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userRole.name()));
     }
-
-    private List<String> oauthConnections = new ArrayList<>();
-
-    private List<SavedGame> savedGames = new ArrayList<>();
-    private List<Game> wishlistGames = new ArrayList<>();
-    private List<Review> reviews = new ArrayList<>();
-
-    private String description = "New user desc";
-    private String birthdate = "10.02.2022";
-    private String avatarImg = "avatarImgUrl";
-    private String backgroundImg = "bgImgUrl";
-
-    private List<String> socialLinks = new ArrayList<>();
 
     @Transient
     public UserDTO asDTO() {
@@ -68,15 +55,7 @@ public class User implements UserDetails {
                 .id(this.id)
                 .username(this.username)
                 .email(this.email)
-                .oauthConnections(this.oauthConnections)
                 .savedGames(this.savedGames)
-                .wishlistGames(this.wishlistGames)
-                .reviews(this.reviews)
-                .description(this.description)
-                .birthdate(this.birthdate)
-                .avatarImg(this.avatarImg)
-                .backgroundImg(this.backgroundImg)
-                .socialLinks(this.socialLinks)
                 .build();
     }
 
@@ -85,14 +64,6 @@ public class User implements UserDetails {
         this.id = userDTO.getId(); // Should never actually change
         this.username = userDTO.getUsername();
         this.email = userDTO.getEmail();
-        this.oauthConnections = userDTO.getOauthConnections();
         this.savedGames = userDTO.getSavedGames();
-        this.wishlistGames = userDTO.getWishlistGames();
-        this.reviews = userDTO.getReviews();
-        this.description = userDTO.getDescription();
-        this.birthdate = userDTO.getBirthdate();
-        this.avatarImg = userDTO.getAvatarImg();
-        this.backgroundImg = userDTO.getBackgroundImg();
-        this.socialLinks = userDTO.getSocialLinks();
     }
 }

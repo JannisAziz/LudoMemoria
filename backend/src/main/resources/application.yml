@@ -2,4 +2,4 @@ spring.data.mongodb.uri: ${MONGOCLUSTER_URI:mongodb://localhost/ludoMemoria?retr
 
 server.port: ${PORT:8080}
 
-secret: ${SECRET:"DEV_SECRET"}
+secret: ${SECRET:DEV_SECRET}
