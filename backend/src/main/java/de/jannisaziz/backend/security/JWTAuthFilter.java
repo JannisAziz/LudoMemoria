@@ -1,12 +1,10 @@
 package de.jannisaziz.backend.security;
 
-import de.jannisaziz.backend.user.User;
-import de.jannisaziz.backend.user.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import lombok.AllArgsConstructor;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,8 +38,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 final UserDetails user = userService.loadUserByUsername(username);
 
                 if (jwtUtilService.validateToken(token, user.getUsername())) {
-                    final EmailPasswordAuthToken authToken =
-                            new EmailPasswordAuthToken(user.getUsername(), null, user.getAuthorities());
+                    final UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(user.getUsername(), null, user.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
@@ -49,7 +47,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            LOG.warn("Error while parsing token", e);
+            LOG.warn("Error while parsing token: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);
@@ -62,17 +60,5 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         else {
             return authHeader.replace("Bearer", "").trim();
         }
-    }
-
-    public String getUser(String token) {
-        if ((token != null) && !(token.equals("undefined")) && (!token.isBlank())) {
-            try {
-                return jwtUtilService.extractUsername(token);
-            } catch (ExpiredJwtException e) {
-                LOG.warn("Token expired");
-                throw e;
-            }
-        }
-        return null;
     }
 }

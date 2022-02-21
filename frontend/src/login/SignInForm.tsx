@@ -2,8 +2,12 @@ import React, {FormEventHandler, MouseEventHandler, useState} from "react";
 import {signIn} from "./LoginService";
 import {Button, TextField} from "@mui/material";
 import isValidEmail from "./EmailValidator";
+import {retrieveCurrentUser} from "../users/UserService";
+import {useNavigate} from "react-router-dom";
 
-export default function SignInForm() {
+export default function SignInForm({onSubmit}: {onSubmit: Function}) {
+
+    const nav = useNavigate()
 
     const [usernameEmail, setUsernameEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -11,14 +15,21 @@ export default function SignInForm() {
     const onSignInSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault()
 
-        if (usernameEmail && password) {
-            isValidEmail(usernameEmail) ?
-                signIn(undefined, usernameEmail.toLowerCase(), password).then(alert) :
-                signIn(usernameEmail, undefined, password).then(alert)
-        }
-        else {
-            alert("Empty fields not allowed")
-        }
+        if (usernameEmail.length === 0 && !password)
+            return alert("Empty fields not allowed")
+
+        isValidEmail(usernameEmail) ? (
+            signIn("", usernameEmail.toLowerCase(), password)
+                .then(() => retrieveCurrentUser())
+                .then(() => nav("/profile"))
+                .catch(err => alert("Error signing in: " + err.message))
+            ) :
+            signIn(usernameEmail, "", password)
+                .then(() => retrieveCurrentUser())
+                .then(() => nav("/profile"))
+                .catch(err => alert("Error signing in: " + err.message))
+
+        onSubmit()
     }
 
     const onForgotPassword: MouseEventHandler<HTMLButtonElement> = (e) => {
@@ -26,16 +37,17 @@ export default function SignInForm() {
 
         const email = prompt("Enter your email")
 
-        if (email) {
-            if (isValidEmail(email))
-                //forgotPassword(email.toLowercase())
-                alert("email sent to " + email)
-            else alert("invalid email")
-        }
+        if (!email) return alert("invalid email")
+
+        if (isValidEmail(email))
+            alert("email sent to " + email)
+            //forgotPassword(email.toLowercase())
+
+        onSubmit()
     }
 
     return (
-        <form className={"LoginForm"} onSubmit={onSignInSubmit}>
+        <form className={"SignInForm"} onSubmit={onSignInSubmit}>
             <TextField onChange={e => setUsernameEmail(e.currentTarget.value)} label={"Username/Email"} variant={"outlined"}/>
             <TextField onChange={e => setPassword(e.currentTarget.value)} label={"Password"} type={"password"} variant={"outlined"} />
             <Button type={"submit"} variant={"contained"}>Sign In</Button>

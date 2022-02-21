@@ -1,12 +1,13 @@
 package de.jannisaziz.backend.security;
 
-import de.jannisaziz.backend.user.UserDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @AllArgsConstructor
 @RestController
@@ -16,9 +17,9 @@ public class LoginController {
     private final LoginService loginService;
 
     @PostMapping("signIn")
-    public UserDTO signIn(@RequestBody LoginRequest request) throws ResponseStatusException {
+    public String signIn(@RequestBody LoginRequest request) throws ResponseStatusException {
         try {
-            return loginService.signIn(request).asDTO();
+            return loginService.login(request);
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -27,7 +28,7 @@ public class LoginController {
     @PostMapping("signUp")
     public String signUp(@RequestBody LoginRequest request) throws ResponseStatusException {
         try {
-            return loginService.signUp(request); // Returns "Confirmation email sent" on success
+            return loginService.signUp(request);
         } catch (IllegalStateException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -45,12 +46,16 @@ public class LoginController {
     @GetMapping("confirm={confirmationToken}")
     public String confirm(HttpServletResponse response, @PathVariable String confirmationToken) throws ResponseStatusException {
 
-        response.setHeader("Location", "http://localhost:3000/");
-        response.setStatus(302);
-
         try {
+            String locationAddress = "http://"  + InetAddress.getLocalHost().getHostAddress() + ":3000/";
+
+            System.out.println("CONFIRM : " + locationAddress+ " - Token - " + confirmationToken);
+
+            response.setHeader("Location", locationAddress);
+            response.setStatus(302);
+
             return loginService.confirmToken(confirmationToken);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | UnknownHostException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

@@ -5,14 +5,12 @@ import de.jannisaziz.backend.user.UserService;
 import de.jannisaziz.backend.user.User;
 import de.jannisaziz.backend.user.UserRole;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -22,32 +20,20 @@ public class LoginService {
 
     private final AuthenticationManager authManager;
     private final JWTUtilService jwtUtilService;
-
-    public String login(LoginRequest request) {
-        try {
-            authManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
-            //todo: implement email authorization aswell!
-
-            return jwtUtilService.createToken(userService.findUser(request.getUsername(), request.getEmail()));
-        } catch (AuthenticationException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid credentials");
-        }
-    }
-
     private final EmailService emailService;
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
-    public User signIn(LoginRequest request) throws IllegalStateException, IllegalArgumentException {
+    public String login(LoginRequest request) throws IllegalStateException {
         try {
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
             User user = userService.findUser(request.getUsername(), request.getEmail());
 
-            if (passwordEncoder.matches(request.getPassword(), user.getPassword())) return user;
-            else throw new IllegalArgumentException("Wrong Password");
-        } catch (UsernameNotFoundException | IllegalArgumentException e) {
-            throw new IllegalStateException(e.getMessage());
+            return jwtUtilService.createToken(user);
+        } catch (AuthenticationException e) {
+            throw new IllegalStateException("Invalid credentials");
         }
     }
 
@@ -55,7 +41,7 @@ public class LoginService {
         try {
             String confirmationToken = UUID.randomUUID().toString();
 
-            userService.createUser(new User(
+            User user = userService.createUser(new User(
                     request.getUsername(),
                     request.getEmail(),
                     passwordEncoder.encode(request.getPassword()),
@@ -63,7 +49,12 @@ public class LoginService {
                     confirmationToken)
             );
 
-            return emailService.sendEmail(request.getEmail(), request.getUsername(), confirmationToken);
+            emailService.sendEmail(request.getEmail(), request.getUsername(), confirmationToken);
+
+            authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+
+            return jwtUtilService.createToken(user);
         } catch (IllegalStateException e) {
             throw new IllegalStateException(e.getMessage());
         }
