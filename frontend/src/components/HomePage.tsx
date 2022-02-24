@@ -11,8 +11,8 @@ export default function HomePage() {
     const {search, genre} = useParams()
 
     const [games, setGames] = useState<Game[]>([])
-    const [resultsPerPage, setResultsPerPage] = useState(20)
     const [currentPage, setCurrentPage] = useState(0)
+    const resultsPerPage = 20
 
     const loaderPanel = useRef<HTMLDivElement>(null)
     const onScreen = useOnScreen(loaderPanel)
@@ -67,7 +67,6 @@ export default function HomePage() {
                 </div> : undefined}
 
             <SearchResultsPanel games={games} />
-
 
             <Skeleton ref={loaderPanel} variant={"text"} />
         </div>
