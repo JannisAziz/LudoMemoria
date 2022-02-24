@@ -1,5 +1,5 @@
 import {FormEventHandler, useState} from "react";
-import {Button, TextField} from "@mui/material";
+import {IconButton, TextField} from "@mui/material";
 import {Search} from "@mui/icons-material";
 
 export default function SearchForm({onSearch}: {onSearch: (input: string) => void}) {
@@ -9,14 +9,19 @@ export default function SearchForm({onSearch}: {onSearch: (input: string) => voi
     const onSearchSubmit: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault()
 
-        if (searchText.length > 0)
-            onSearch(searchText)
+        if (searchText.length > 0) onSearch(searchText)
     }
 
     return (
         <form className={"SearchForm"} onSubmit={onSearchSubmit}>
-            <TextField onChange={e => setSearchText(e.currentTarget.value)} label={"Search"}/>
-            <Button type={"submit"} variant={"outlined"}><Search/></Button>
+            <TextField
+                className={"SearchFormTextField"}
+                onChange={e => setSearchText(e.currentTarget.value)}
+                placeholder={"Search"}
+            />
+            <IconButton type={"submit"}>
+                <Search />
+            </IconButton>
         </form>
     )
 }

@@ -33,10 +33,10 @@ public class SavedGameService {
         else throw NO_GAMES_FOUND_EX(savedGame.getId());
     }
 
-    public void deleteSavedGame(SavedGame savedGame) throws IllegalArgumentException {
-        if (repository.existsById(savedGame.getId())){
-            repository.delete(savedGame);
+    public void deleteSavedGame(String savedGameId) throws IllegalArgumentException {
+        if (repository.existsById(savedGameId)){
+            repository.deleteById(savedGameId);
         }
-        else throw NO_GAMES_FOUND_EX(savedGame.getId());
+        else throw NO_GAMES_FOUND_EX(savedGameId);
     }
 }

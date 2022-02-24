@@ -9,7 +9,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import de.jannisaziz.backend.game.Game;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class IGDBDeserializer {
@@ -29,12 +31,11 @@ public class IGDBDeserializer {
             ObjectCodec oc = jsonParser.getCodec();
             JsonNode gameNode = oc.readTree(jsonParser);
 
-            String id = gameNode.findPath("game").findPath("id").asText("NO-ID");
+            String id = gameNode.findPath("checksum").asText("NO-ID");
             String name = gameNode.findPath("name").asText("NO-NAME");
-            String summary = gameNode.findPath("summary").asText("NO-DESC");
-            String coverId = gameNode.findPath("cover").findPath("image_id").asText("nocover");
+            String summary = gameNode.findPath("summary").asText("N/A");
 
-            System.out.println(gameNode);
+            String coverId = gameNode.findPath("cover").findPath("image_id").asText("nocover");
 
             List<String> screenshotIds = new ArrayList<>();
             gameNode.findPath("screenshots").elements().forEachRemaining(

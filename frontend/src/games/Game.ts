@@ -1,14 +1,12 @@
-import {Review} from "./Review";
-
 export type Game = {
     id: string
     name: string
     description: string
 
-    imageUrl: string
+    coverId: string
+    screenshotIds: string[]
+}
 
-    votesUp?: number
-    votesDown?: number
-
-    reviews?: Review[]
+export function getImgUrl(imageId: string, size?: string) {
+    return `https://images.igdb.com/igdb/image/upload/t_${size || "thumb"}/${imageId}.jpg`
 }

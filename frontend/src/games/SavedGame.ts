@@ -1,12 +1,8 @@
-import {Game} from "./Game";
-
 export type SavedGame = {
 
-    id: string
+    id?: string
+    userId: string
+    gameId: string
 
-    game: Game
-
-    timePlayed?: number
-    achievements?: string[]
-    notes?: string[]
+    notes: string[]
 }

@@ -34,6 +34,15 @@ public class GameController {
         }
     }
 
+    @PostMapping("/ids")
+    public List<Game> findGamesByIds(@RequestBody String ...ids) throws ResponseStatusException {
+        try {
+            return service.getGamesByIds(ids);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
     @PatchMapping("/update")
     public Game updateGame(@RequestBody Game game) throws ResponseStatusException {
         if (isAuthorized(UserRole.USER)) try {

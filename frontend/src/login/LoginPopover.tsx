@@ -26,8 +26,8 @@ export default function LoginPopover() {
                     <Tab className={"Tab"} label={"Sign Up"} onClick={() => setTabToggle(false)}/>
                 </div>
                 {tabToggle ?
-                    (<div children={<SignInForm onSubmit={() => setTabToggle(false)}/>}/>) :
-                    (<div children={<SignUpForm onSubmit={() => setTabToggle(false)}/>}/>)
+                    (<div children={<SignInForm onSubmit={() => setAnchorEl(null)}/>}/>) :
+                    (<div children={<SignUpForm onSubmit={() => setAnchorEl(null)}/>}/>)
                 }
             </Popover>
         </div>

@@ -33,7 +33,7 @@ public class LoginService {
 
             return jwtUtilService.createToken(user);
         } catch (AuthenticationException e) {
-            throw new IllegalStateException("Invalid credentials");
+            throw new IllegalStateException("Invalid credentials or user not found");
         }
     }
 

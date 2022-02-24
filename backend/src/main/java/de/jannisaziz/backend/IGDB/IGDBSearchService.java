@@ -20,7 +20,7 @@ public class IGDBSearchService {
 
     public List<Game> browseAllByPage(int resultsPerPage, int currentPage) throws IllegalArgumentException {
         List<Game> searchResults = igdbRepository.browseAllByPage(resultsPerPage, currentPage)
-                .orElseThrow(() -> NO_GAMES_FOUND_EX(resultsPerPage + "rpp " + currentPage + "pg"));
+                .orElseThrow(() -> NO_GAMES_FOUND_EX("Browse:" + resultsPerPage + "rpp " + currentPage + "pg"));
         return gameRepository.saveAll(searchResults);
     }
 
@@ -33,7 +33,7 @@ public class IGDBSearchService {
 
     public List<Game> searchByName(String name, int resultsPerPage, int currentPage) throws IllegalArgumentException {
         List<Game> searchResults = igdbRepository.searchGamesByName(name, resultsPerPage, currentPage)
-                .orElseThrow(() -> NO_GAMES_FOUND_EX(name));
+                .orElseThrow(() -> NO_GAMES_FOUND_EX("Search by name:" + name));
 
         return gameRepository.saveAll(searchResults);
     }
@@ -45,7 +45,7 @@ public class IGDBSearchService {
 
     public List<Game> searchByGenre(String genre, int resultsPerPage, int currentPage) throws IllegalArgumentException {
         List<Game> searchResults = igdbRepository.searchGamesByGenre(genre, resultsPerPage, currentPage)
-                .orElseThrow(() -> NO_GAMES_FOUND_EX(genre));
+                .orElseThrow(() -> NO_GAMES_FOUND_EX("Search by genre: " + genre));
 
         return gameRepository.saveAll(searchResults);
     }

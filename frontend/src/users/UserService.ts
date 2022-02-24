@@ -14,15 +14,27 @@ export function retrieveCurrentUser() {
         .get("/api/users/currentUser", getAxiosConfig())
         .then(res => {
             setLoggedInUser(res.data)
-            return res.data
+            return res.data as User
         })
+}
+
+export function getUserById(userId: string) {
+    return axios
+        .get(`/api/users/id=${userId}`, getAxiosConfig())
+        .then(res => res.data as User)
+}
+
+export function getUserByName(username: string) {
+    return axios
+        .get(`/api/users/name=${username}`, getAxiosConfig())
+        .then(res => res.data as User)
 }
 
 export function updateUser(user: User) {
     return axios
-        .patch(`/api/users/update`, user, getAxiosConfig())
+        .patch("/api/users", user, getAxiosConfig())
         .then(res => {
             setLoggedInUser(res.data)
-            return res.data
+            return res.data as User
         })
 }

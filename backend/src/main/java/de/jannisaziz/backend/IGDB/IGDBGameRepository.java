@@ -12,8 +12,16 @@ public class IGDBGameRepository {
 
     private static final WebClient webClient = WebClient.create();
     private static final String IGDB_API_URI = "https://api.igdb.com/v4/";
-    private static final String GAME_FIELDS =
-            "fields id, game.name, game.summary, game.cover.image_id, game.rating, game.screenshots.image_id, game.first_release_date;";
+    private static final String SEARCH_FIELDS =
+            "fields game.checksum, " +
+            "game.name, " +
+            "game.summary, " +
+            "game.cover.image_id, " +
+            "game.screenshots.image_id, " +
+            "game.first_release_date, " +
+            "game.genres " +
+            ";";
+    private static final String GAME_FIELDS = SEARCH_FIELDS.replace("game.", "");
 
     private static final List<IGDBDeserializer.IGDBGenreResult> GENRES = new ArrayList<>();
 
@@ -21,6 +29,22 @@ public class IGDBGameRepository {
         return Optional.ofNullable(webClient
                 .post()
                 .uri(IGDB_API_URI + "search/")
+                .header("Client-ID", IGDBAuth.getClientId())
+                .header("Authorization", "Bearer " + IGDBAuth.getAccessToken())
+                .header("Content-Type", "application/apicalypse")
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(searchQuery)
+                .retrieve()
+                .bodyToFlux(IGDBDeserializer.IGDBGameResult.class)
+                .map(IGDBDeserializer.IGDBGameResult::game)
+                .collectList()
+                .block());
+    }
+
+    private Optional<List<Game>> gamesIGDB(String searchQuery) {
+        return Optional.ofNullable(webClient
+                .post()
+                .uri(IGDB_API_URI + "games/")
                 .header("Client-ID", IGDBAuth.getClientId())
                 .header("Authorization", "Bearer " + IGDBAuth.getAccessToken())
                 .header("Content-Type", "application/apicalypse")
@@ -53,22 +77,25 @@ public class IGDBGameRepository {
     }
 
     public Optional<List<Game>> browseAllByPage(int resultsPerPage, int currentPage) throws NoSuchElementException {
-        String where = "where %s ;".formatted("game != n & game.name != n");
+        int timeNow = Math.round(new Date().getTime() / 1000f);
+        String where = "where %s ;".formatted(
+                "name != n & cover.image_id != n & first_release_date != n & first_release_date < " + timeNow);
+        String sort = "sort %s ;".formatted("first_release_date desc");
         String limit = "limit %s ;".formatted(resultsPerPage);
-        String offset = "offset %s ;".formatted(resultsPerPage + currentPage);
+        String offset = "offset %s ;".formatted(resultsPerPage * currentPage);
 
-        String query = GAME_FIELDS + where + limit + offset;
+        String query =  GAME_FIELDS + sort + where + limit + offset;
 
-        return searchIGDB(query);
+        return gamesIGDB(query);
     }
 
     public Optional<List<Game>> searchGamesByName(String name, int resultsPerPage, int currentPage) {
-        String where = "where %s ;".formatted("game != n & game.name != n");
-        String limit = "limit %s ;".formatted(resultsPerPage);
-        String offset = "offset %s ;".formatted(resultsPerPage + currentPage);
+        String where = "where %s ; ".formatted("game != n & game.name != n");
+        String limit = "limit %s ; ".formatted(resultsPerPage);
+        String offset = "offset %s ; ".formatted(resultsPerPage * currentPage);
 
         String query = "search \"" + name + "\"; " +
-                GAME_FIELDS + where + limit + offset;
+                SEARCH_FIELDS + where + limit + offset;
 
         return searchIGDB(query);
     }
@@ -85,19 +112,20 @@ public class IGDBGameRepository {
     }
 
     public Optional<List<Game>> searchGamesByGenre(String genre, int resultsPerPage, int currentPage) {
+        if (GENRES.isEmpty()) getGenres();
+
         if (GENRES.stream().anyMatch(r -> r.name().equals(genre))) try {
-                List<Integer> genreIds = GENRES.stream().filter(r -> r.name().equals(genre)).map(IGDBDeserializer.IGDBGenreResult::id).toList();
+            List<Integer> genreIds = GENRES.stream().filter(r -> r.name().equals(genre)).map(IGDBDeserializer.IGDBGenreResult::id).toList();
 
-                String where = "where %s ;".formatted("where game != n & game.name != n & game.genres = " + genreIds);
-                String sort = "sort %s ;".formatted("game.rating desc");
-                String limit = "limit %s ;".formatted(resultsPerPage);
-                String offset = "offset %s ;".formatted(resultsPerPage + currentPage);
+            String where = "where %s ;".formatted("name != n & cover.image_id != n & genres = " + genreIds);
+            String limit = "limit %s ;".formatted(resultsPerPage);
+            String offset = "offset %s ;".formatted(resultsPerPage * currentPage);
 
-                String query = GAME_FIELDS + sort + where + limit + offset;
+            String query = GAME_FIELDS + where + limit + offset;
 
-                return searchIGDB(query);
+            return gamesIGDB(query);
         } catch (Exception e) {
-            throw new IllegalArgumentException("No genres found: " + genre);
+            throw new IllegalArgumentException("No games found: " + genre);
         } else
             throw new IllegalArgumentException("No genres found: " + genre);
     }
@@ -106,9 +134,9 @@ public class IGDBGameRepository {
         String where = "where %s ;".formatted("game != n & game.name != n & game.first_release_date >= " + releaseTime);
         String sort = "sort %s ;".formatted("game.first_release_date desc");
         String limit = "limit %s ;".formatted(resultsPerPage);
-        String offset = "offset %s ;".formatted(resultsPerPage + currentPage);
+        String offset = "offset %s ;".formatted(resultsPerPage * currentPage);
 
-        String query = GAME_FIELDS + sort + where + limit + offset;
+        String query = SEARCH_FIELDS + sort + where + limit + offset;
 
         return searchIGDB(query);
     }

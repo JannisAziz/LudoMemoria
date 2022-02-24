@@ -30,7 +30,7 @@ public class SavedGameController {
         try {
             return service.findSavedGamesByUserId(userId);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "findgamesbyuserid: " + e.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class SavedGameController {
         if (isAuthorized(UserRole.USER)) try {
             return service.addSavedGame(savedGame);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "addgame:" + e.getMessage());
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
@@ -49,17 +49,20 @@ public class SavedGameController {
         if (isAuthorized(UserRole.USER)) try {
             return service.updateSavedGame(savedGame);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "updategame:" + e.getMessage());
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
 
-    @DeleteMapping
-    public void deleteSavedGame(@RequestBody SavedGame savedGame) throws ResponseStatusException {
+    @DeleteMapping("/id={savedGameId}")
+    public void deleteSavedGameById(@PathVariable String savedGameId) throws ResponseStatusException {
+
+        System.out.println("DELETE SAVED GAME: " + savedGameId);
+
         if (isAuthorized(UserRole.USER)) try {
-            service.deleteSavedGame(savedGame);
+            service.deleteSavedGame(savedGameId);
         } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "delete:" + e.getMessage());
         }
         throw new ResponseStatusException(HttpStatus.FORBIDDEN);
     }
