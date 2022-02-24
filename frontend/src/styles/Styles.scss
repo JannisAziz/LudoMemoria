@@ -1,87 +1,94 @@
-$color-main: #4b4b4b;
+$color-main: #3c3c3c;
+$color-main-light: lighten($color-main, 5%);
+$color-main-lighter: lighten($color-main, 10%);
+$color-main-lightest: lighten($color-main, 15%);
 $color-main-dark: darken($color-main, 5%);
 $color-main-darker: darken($color-main, 10%);
 $color-main-darkest: darken($color-main, 15%);
 $color-main-transparent: transparentize($color-main-darker, .3);
+$color-divider: transparentize($color-main-darker, .3);
 $text-color-main: #ffffff;
 $text-color-selected: #969696;
 
 .App {
   background: $color-main;
-  height: 100vh;
-}
-
-* { #border: 1px solid black}
-
-.NavHeader {
-  background: $color-main-dark;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 5vh;
-
-  font-size: 4vh;
-  font-weight: 500;
+  min-height: 100vh;
+  padding: 1rem;
+  border: 1px solid black;
 
   * {
     color: $text-color-main;
-    text-decoration: none;
+    #border: 1px solid black;
   }
+}
+
+.Tab {
+  border: 2px solid $color-main-darkest;
+}
+
+.NavHeader {
+  background: $color-main-light;
+  display: flex;
+  padding: 5px;
 
   .NavLogo {
-    margin-inline: min(20px);
+    margin-right: 2rem;
 
-    transition: .2s;
-
-    &:hover {
-      color: $text-color-selected;
+    div {
+      display: none;
     }
   }
 
-
-  .NavTabs {
-    * {
-      margin-inline-end: min(1rem);
-      transition: .2s;
-
-      &:hover {
-        color: $text-color-selected;
-        border-bottom: 4px solid $color-main-darker;
+  @media screen and (min-width: 800px) {
+    .NavLogo {
+      div {
+        display: inline-flex;
       }
     }
   }
 }
 
-.SearchForm {
+.LoginPanel {
+  margin-left: 2rem;
   display: flex;
-  width: fit-content;
 
-  padding: 1rem;
-  border: 2px solid $color-main-darkest;
-  border-radius: 15px;
+  .PanelText {
+    display: none;
+  }
+
+  @media screen and (min-width: 800px) {
+    .PanelText {
+      display: initial;
+    }
+  }
 }
 
-.LoginPanel {
-  background: $color-main-darker;
+.PopoverTabs {
+  border-top: 2px solid $color-main-darkest;
+  border-left: 2px solid $color-main-darkest;
+  border-right: 2px solid $color-main-darkest;
+}
 
-  width: 100%;
-  max-width: 400px;
-
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
+.SignInForm {
+  display: flex;
+  flex-direction: column;
   border: 2px solid $color-main-darkest;
-  border-radius: 10%;
-  padding: 1rem;
+}
+.SignUpForm {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid $color-main-darkest;
+}
 
-  .LoginForm {
-    display: flex;
-    flex-direction: column;
+.SearchForm {
+  margin: auto;
 
-    padding: 1rem;
+  display: flex;
+  width: 30rem;
+  min-width: 8rem;
+
+  .SearchFormTextField {
+    width: 100%;
 
     * {
       color: $text-color-main;
@@ -89,162 +96,179 @@ $text-color-selected: #969696;
   }
 }
 
+.CategoriesButtons {
+  background: $color-main-darker;
+  display: flex;
+  flex-flow: wrap;
+
+  min-width: 20rem;
+}
+
 .CatalogPage {
   background: $color-main-darkest;
   color: $text-color-main;
-  height: auto;
 }
 
-.GamesList {
+.GamesGrid {
   display: grid;
 
-  gap: 15px;
-  padding: 15px;
+  list-style: none;
 
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  justify-items: center;
-
-  .GameCard {
-    background: $color-main-darker;
-
-    position: relative;
-    display: flex;
-    flex-flow: column;
-
-    border-radius: 5%;
-
-    transition: .5s;
-
-    margin: 20px;
-
-    .GameImg {
-      width: auto;
-      border-radius: 5%;
-      border: 5px solid $color-main-darker;
-    }
-
-    .GameCardOverlay {
-      background: $color-main-transparent;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-
-      opacity: 0;
-
-      text-align: center;
-      overflow: hidden;
-
-      width: auto;
-      height: 0;
-
-      transition: .5s;
-
-      border-radius: 20px;
-
-      * {
-        background: transparent;
-        padding: 1rem;
-      }
-
-      .GameCardOverlayIcons {
-        display: flex;
-        justify-content: space-evenly;
-        align-content: flex-end;
-
-        Button {
-          background: $color-main-darker;
-          border: 5px solid $color-main-darkest;
-          border-radius: 40%;
-          transition: .5s;
-
-          &:hover {
-            background: $color-main-dark;
-            border-radius: 20%;
-            scale: 1.2;
-          }
-
-          &:active {
-            scale: .9;
-          }
-        }
-      }
-    }
-
-    &:hover {
-      height: auto;
-
-      scale: 1.1;
-      z-index: 1;
-
-      .GameCardOverlay {
-        opacity: 1;
-        height: 80%;
-      }
-    }
-  }
-}
-
-.GamePanel {
-
-  width: 100%;
-  max-width: 800px;
-
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-
-  color: $text-color-main;
-
-  .GamePanelDetails {
-    display: grid;
-    grid-template: "a b";
-    gap: 20px;
-    padding: 10px;
-  }
-}
-
-.TabList {
-  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
   justify-content: space-evenly;
 
-  list-style: none;
-  padding: 0;
+  padding: 1rem 2rem;
+  gap: 1rem 2rem;
 }
 
-.Tab {
-  height: auto;
+.GameCard {
+  background: $color-main-darker;
 
-  color: $text-color-main;
-  font-size: 36px;
+  position: relative;
+  max-width: 300px;
+  height: 100%;
 
-  border: 2px solid $color-main-darkest;
+  display: flex;
+  flex-flow: column;
+
   border-radius: 5%;
 
-  padding: 1rem;
+  transition: .5s;
 
-  transition: .2s;
-
-  &:hover {
-    background: $color-main-dark;
+  .GameImg {
+    width: auto;
+    border-radius: 5%;
+    border: 5px solid $color-main-darker;
   }
 
-  &:active {
-    color: black;
-    translate: 0 5%;
+
+  .GameCardOverlay {
+    background: $color-main-transparent;
+
+    border-radius: 10%;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+
+    text-align: center;
+    overflow: hidden;
+
+    transition: .5s;
+    height: 0;
+    opacity: 0;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  &:hover {
+    .GameCardOverlay {
+      opacity: 1;
+      height: 40%;
+    }
+  }
+
+}
+
+.GamePage {
+  color: $text-color-main;
+
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 1000px;
+
+  display: grid;
+
+  gap: 20px;
+  padding: 10px;
+
+  grid-template-areas:
+  "img img"
+  "img img"
+  "title title"
+  "buttons buttons"
+  "desc desc"
+  "carousel carousel"
+  "reviews reviews";
+
+  //grid-template-columns: minmax(10rem, auto) min(20px) auto;
+  grid-template-columns: repeat(auto-fit, minmax(min(10rem, 20px), auto));
+
+  @media screen and (min-width: 600px) {
+    grid-template-areas:
+    "title img img"
+    "buttons img img"
+    "desc desc desc"
+    "carousel carousel carousel"
+    "carousel carousel carousel"
+    "reviews reviews reviews";
+
+    img {
+      grid-area: img;
+      justify-self: flex-end;
+    }
+  }
+
+  h2 {
+    grid-area: title;
+    align-self: flex-end;
+  }
+
+  img {
+    grid-area: img;
+    justify-self: center;
+  }
+
+  .GamePageButtons {
+    grid-area: buttons;
+    display: flex;
+    flex-direction: column;
+    justify-self: flex-start;
+    align-self: flex-end;
+  }
+
+  .GameDescription {
+    grid-area: desc;
+    justify-self: center;
+  }
+  .ScreenshotCarousel {
+    grid-area: carousel;
+
+    list-style: none;
+    padding: 0;
+
+    border: 2px solid $color-main-darkest;
+  }
+
+  .ReviewsList {
+    grid-area: reviews;
+
   }
 }
 
-.ProfilePanel {
-
-  width: 100%;
-  max-width: 800px;
-
-  position: fixed;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.ReviewsList {
 
 
+  max-width: 100ch;
+
+  .ReviewListItem {
+    * {
+     color: $text-color-main;
+    }
+
+    .Votes {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}
+
+.ReviewForm {
+  .ReviewFormInput {
+
+  }
 }

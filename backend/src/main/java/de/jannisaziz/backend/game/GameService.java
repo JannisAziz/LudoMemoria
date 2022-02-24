@@ -1,9 +1,11 @@
 package de.jannisaziz.backend.game;
 
-import de.jannisaziz.backend.game.IGDB.IGDBGameRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -15,25 +17,28 @@ public class GameService {
     }
 
     private final GameRepository repository;
-    private final IGDBGameRepository igdbRepository;
 
-    public List<Game> findGamesByName(String name) throws IllegalArgumentException {
-
-        List<Game> searchResults = igdbRepository.searchGamesByName(name);
-
-        if (searchResults.isEmpty())
-            throw NO_GAMES_FOUND_EX(name);
-        else
-            return searchResults;
-    }
-    public Game findGameById(String id) throws IllegalArgumentException {
-
-        if (!repository.existsById(id)) {
-            Game game = igdbRepository.findGameById(id);
-
-            return repository.save(game);
-        }
+    public Game getGameById(String id) throws IllegalArgumentException {
         return repository.findById(id)
-                .orElseThrow(() -> NO_GAMES_FOUND_EX(id));
+            .orElseThrow(() -> NO_GAMES_FOUND_EX(id));
+    }
+
+    public List<Game> getGamesByIds(String ...ids) throws IllegalArgumentException {
+        List<Game> games = new ArrayList<>();
+
+        repository.findAllById(Arrays.stream(ids).toList())
+                .forEach(games::add);
+
+        if (games.isEmpty())
+            throw NO_GAMES_FOUND_EX(Arrays.toString(ids));
+        else
+            return games;
+    }
+
+    public Game updateGame(Game game) throws IllegalArgumentException {
+        if (repository.existsById(game.getId()))
+            return repository.save(game);
+        else
+            throw NO_GAMES_FOUND_EX(game.getId());
     }
 }

@@ -18,16 +18,13 @@ export default function SignInForm({onSubmit}: {onSubmit: Function}) {
         if (usernameEmail.length === 0 && !password)
             return alert("Empty fields not allowed")
 
-        isValidEmail(usernameEmail) ? (
-            signIn("", usernameEmail.toLowerCase(), password)
-                .then(() => retrieveCurrentUser())
-                .then(() => nav("/profile"))
-                .catch(err => alert("Error signing in: " + err.message))
-            ) :
+        const response = isValidEmail(usernameEmail) ?
+            signIn("", usernameEmail.toLowerCase(), password) :
             signIn(usernameEmail, "", password)
-                .then(() => retrieveCurrentUser())
+
+        response.then(() => retrieveCurrentUser())
                 .then(() => nav("/profile"))
-                .catch(err => alert("Error signing in: " + err.message))
+                .catch(err => alert("Invalid Credentials"))
 
         onSubmit()
     }

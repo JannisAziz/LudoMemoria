@@ -1,6 +1,5 @@
 package de.jannisaziz.backend.user;
 
-import de.jannisaziz.backend.game.SavedGame;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -9,7 +8,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,8 +35,6 @@ public class User implements UserDetails {
 
     private String confirmationToken;
 
-    private List<SavedGame> savedGames = new ArrayList<>();
-
     private boolean isAccountNonExpired = true;
     private boolean isAccountNonLocked = true;
     private boolean isCredentialsNonExpired = true;
@@ -55,7 +51,6 @@ public class User implements UserDetails {
                 .id(this.id)
                 .username(this.username)
                 .email(this.email)
-                .savedGames(this.savedGames)
                 .build();
     }
 
@@ -64,6 +59,5 @@ public class User implements UserDetails {
         this.id = userDTO.getId(); // Should never actually change
         this.username = userDTO.getUsername();
         this.email = userDTO.getEmail();
-        this.savedGames = userDTO.getSavedGames();
     }
 }
