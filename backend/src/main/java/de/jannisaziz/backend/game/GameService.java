@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -23,14 +21,14 @@ public class GameService {
             .orElseThrow(() -> NO_GAMES_FOUND_EX(id));
     }
 
-    public List<Game> getGamesByIds(String ...ids) throws IllegalArgumentException {
+    public List<Game> getGamesByIds(List<String> ids) throws IllegalArgumentException {
         List<Game> games = new ArrayList<>();
 
-        repository.findAllById(Arrays.stream(ids).toList())
+        repository.findAllById(ids)
                 .forEach(games::add);
 
         if (games.isEmpty())
-            throw NO_GAMES_FOUND_EX(Arrays.toString(ids));
+            throw NO_GAMES_FOUND_EX(ids.toString());
         else
             return games;
     }
