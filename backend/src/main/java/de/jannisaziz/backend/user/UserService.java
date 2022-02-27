@@ -61,13 +61,11 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public String confirmUser(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByUsernameOrEmail(null, email)
-                .orElseThrow(() -> USR_NF_EX(email));
+    public User confirmUser(String confirmationToken) throws UsernameNotFoundException {
+        User user = userRepository.findUserByConfirmationToken(confirmationToken)
+                .orElseThrow(() -> USR_NF_EX(confirmationToken));
 
         user.setEnabled(true);
-        userRepository.save(user);
-
-        return "User confirmed";
+        return userRepository.save(user);
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 @Builder
 @Getter
 @Setter
+@EqualsAndHashCode
 public class UserDTO {
 
     @Id

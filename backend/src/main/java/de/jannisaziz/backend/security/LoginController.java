@@ -1,5 +1,6 @@
 package de.jannisaziz.backend.security;
 
+import de.jannisaziz.backend.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -54,7 +55,10 @@ public class LoginController {
             response.setHeader("Location", locationAddress);
             response.setStatus(302);
 
-            return loginService.confirmToken(confirmationToken);
+            User confirmedUser =  loginService.confirmUserByToken(confirmationToken);
+
+            return confirmedUser.getEmail() + " confirmed!";
+
         } catch (IllegalArgumentException | UnknownHostException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

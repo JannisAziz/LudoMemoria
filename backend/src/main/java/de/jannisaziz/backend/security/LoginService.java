@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -55,7 +56,7 @@ public class LoginService {
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
             return jwtUtilService.createToken(user);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | UnknownHostException e) {
             throw new IllegalStateException(e.getMessage());
         }
     }
@@ -64,15 +65,14 @@ public class LoginService {
         try {
             User user = userService.findUser(null, toEmail);
             return emailService.sendEmail(user.getEmail(), user.getUsername(), user.getConfirmationToken());
-        } catch (UsernameNotFoundException e) {
+        } catch (UsernameNotFoundException | UnknownHostException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
 
-    public String confirmToken(String confirmationToken) throws IllegalArgumentException {
+    public User confirmUserByToken(String confirmationToken) throws IllegalArgumentException {
         try {
-            User user = userService.findUserByConfirmationToken(confirmationToken);
-            return userService.confirmUser(user.getEmail());
+            return userService.confirmUser(confirmationToken);
         } catch (UsernameNotFoundException e) {
             throw new IllegalArgumentException(e.getMessage());
         }

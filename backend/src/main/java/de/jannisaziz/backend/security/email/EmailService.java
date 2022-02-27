@@ -5,14 +5,17 @@ import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Properties;
 
 @Service
 public class EmailService {
 
-    public String sendEmail(String recipientEmail, String recipientName, String token) throws IllegalStateException {
+    public String sendEmail(String recipientEmail, String recipientName, String token) throws IllegalStateException, UnknownHostException {
 
-        String activationLink = "http://192.168.2.104:8080/api/auth/confirm=" + token;
+        String hostAddress = InetAddress.getLocalHost().getHostAddress();
+        String activationLink = "https://"+hostAddress+"/api/auth/confirm=" + token;
 
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");

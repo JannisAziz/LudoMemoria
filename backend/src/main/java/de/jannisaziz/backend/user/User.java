@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Document(collection = "users")
 public class User implements UserDetails {
 
