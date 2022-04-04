@@ -2,22 +2,21 @@
 
 ## Description
 LudoMemoria is a mobile friendly app designed for gamers. 
-It allows for users to create their own library of games so that tracking game progress, achievements and more becomes easier.
-Users may also review games and read ans vote on the reviews of others.
+It allows for users to create their own library of games so that tracking game progress becomes easier.
+Users may also review games and read and vote on the reviews of others.
 
 ## Features
 
 ### MVP
-1. User registration / login & basic profile (JWT Authentication)
+1. User registration / login & basic profile
 2. Users can create and browse their own game library
     - Personal game library with game info (basic details, reviews, etc.)
     - Personal wishlist (Links to game page, cheapest available offer)
     - Personal notes & goals/achievements for each game
 3. Browse a library of >600K games
-    - GameDB API access (RAWG, igdb, )
+    - GameDB API access via 'IGDB'
     - Detail page for each game (Images, Links, etc.)
     - Links to each game detail/review page
-    - Community review creation and voting
 
 ### Should haves:
 1. 3rd party API integration
